@@ -1,0 +1,1372 @@
+<title>One Platform, Three Channels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Design plan
+   Color  : survey-paper ground, ink-green text, one signal orange
+   Type   : Archivo (display + UI), IBM Plex Serif (prose),
+            IBM Plex Mono (data, labels, diagram text)
+   Layout : sticky left index rail, single 72ch measure,
+            figures break wider than the measure
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --paper:      #EDEFE9;
+  --paper-2:    #E4E8DF;
+  --paper-3:    #D9DFD2;
+  --ink:        #131C1A;
+  --ink-2:      #3E4C48;
+  --ink-3:      #6E7C76;
+  --rule:       #C4CDC0;
+  --rule-soft:  #D6DDD2;
+  --signal:     #A83610;
+  --signal-tint:rgba(168,54,16,0.13);
+  --steel:      #2C5D7C;
+  --steel-tint: rgba(44,93,124,0.12);
+  --shadow:     0 1px 2px rgba(19,28,26,0.06), 0 8px 24px -16px rgba(19,28,26,0.35);
+
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body:    "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --measure: 68ch;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1614; --paper-2:#16201E; --paper-3:#1E2A28;
+    --ink:#E9EEE8; --ink-2:#AFBBB5; --ink-3:#7C8A85;
+    --rule:#2B3836; --rule-soft:#222E2C;
+    --signal:#FF8A4C; --signal-tint:rgba(255,138,76,0.15);
+    --steel:#7FB6D9; --steel-tint:rgba(127,182,217,0.13);
+    --shadow:0 1px 2px rgba(0,0,0,0.4), 0 8px 26px -16px rgba(0,0,0,0.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1614; --paper-2:#16201E; --paper-3:#1E2A28;
+  --ink:#E9EEE8; --ink-2:#AFBBB5; --ink-3:#7C8A85;
+  --rule:#2B3836; --rule-soft:#222E2C;
+  --signal:#FF8A4C; --signal-tint:rgba(255,138,76,0.15);
+  --steel:#7FB6D9; --steel-tint:rgba(127,182,217,0.13);
+  --shadow:0 1px 2px rgba(0,0,0,0.4), 0 8px 26px -16px rgba(0,0,0,0.8);
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.shell{
+  max-width:1200px;
+  margin-inline:auto;
+  padding-inline:22px;
+  padding-block:0 96px;
+}
+@media (min-width:980px){
+  .shell{display:grid; grid-template-columns:196px minmax(0,1fr); gap:60px; align-items:start}
+}
+
+/* ── rail ─────────────────────────────────────────────── */
+.rail{
+  position:sticky;
+  top:calc(env(safe-area-inset-top,0px) + 34px);
+  max-height:calc(100dvh - 68px);
+  overflow-y:auto;
+  padding-block:38px 24px;
+  display:flex; flex-direction:column; gap:2px;
+}
+.rail-h{
+  font-family:var(--mono); font-size:10px; font-weight:600;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--ink-3);
+  padding-bottom:12px;
+}
+.rail a{
+  font-family:var(--display); font-size:12.5px; font-weight:500;
+  color:var(--ink-2); text-decoration:none;
+  padding:4px 0 4px 10px; border-left:1.5px solid var(--rule-soft);
+  line-height:1.35;
+}
+.rail a:hover{color:var(--ink); border-left-color:var(--signal)}
+.rail a:focus-visible{outline:2px solid var(--signal); outline-offset:2px; border-radius:2px}
+@media (max-width:979px){
+  .rail{
+    position:static; max-height:none; overflow:visible;
+    flex-direction:row; flex-wrap:wrap; gap:6px;
+    padding-block:22px 8px;
+  }
+  .rail-h{display:none}
+  .rail a{
+    border:1px solid var(--rule); border-left-width:1px; border-radius:100px;
+    padding:3px 11px; font-size:11.5px;
+  }
+}
+
+/* ── document column ──────────────────────────────────── */
+.doc{padding-top:38px; min-width:0}
+.prose{max-width:var(--measure)}
+@media (min-width:980px){.doc{padding-top:56px}}
+
+/* ── type ─────────────────────────────────────────────── */
+h1,h2,h3,h4{font-family:var(--display); text-wrap:balance; margin:0}
+h1{
+  font-size:clamp(2.05rem,1.35rem + 3.1vw,3.1rem);
+  font-weight:700; line-height:1.02; letter-spacing:-.028em;
+}
+h2{
+  font-size:clamp(1.45rem,1.15rem + 1.15vw,1.85rem);
+  font-weight:600; line-height:1.15; letter-spacing:-.018em;
+  margin-bottom:14px;
+}
+h3{
+  font-size:1.02rem; font-weight:600; letter-spacing:-.008em;
+  margin-bottom:8px;
+}
+h4{
+  font-size:.875rem; font-weight:600; letter-spacing:.01em;
+  margin-bottom:6px;
+}
+p{margin:0 0 15px}
+.prose p{max-width:var(--measure)}
+strong{font-weight:600; color:var(--ink)}
+a{color:var(--ink)}
+
+.eyebrow{
+  font-family:var(--mono); font-size:10.5px; font-weight:600;
+  letter-spacing:.17em; text-transform:uppercase; color:var(--signal);
+  margin:0 0 10px;
+}
+section{scroll-margin-top:24px; padding-top:64px}
+@media (min-width:980px){section{scroll-margin-top:34px}}
+.rule-top{border-top:1px solid var(--rule-soft); padding-top:30px}
+section.rule-top{padding-top:64px; margin-top:64px}
+
+/* ── hero ─────────────────────────────────────────────── */
+.hero{padding-top:8px}
+.hero .lede{
+  font-size:clamp(1.05rem,.98rem + .35vw,1.22rem);
+  color:var(--ink-2); max-width:56ch; margin-top:18px;
+}
+.hero .note{
+  font-family:var(--mono); font-size:11px; color:var(--ink-3);
+  margin-top:22px; max-width:60ch; line-height:1.6;
+}
+.meta{
+  display:flex; flex-wrap:wrap; gap:0; margin-top:30px;
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+}
+.meta div{
+  flex:1 1 150px; min-width:0;
+  padding:13px 16px 13px 0;
+  border-right:1px solid var(--rule-soft);
+}
+.meta div:last-child{border-right:0}
+.meta dt{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:3px;
+}
+.meta dd{
+  font-family:var(--display); font-size:14px; font-weight:600;
+  letter-spacing:-.01em; margin:0;
+}
+
+/* ── figures ──────────────────────────────────────────── */
+figure{margin:30px 0; min-width:0}
+.figbox{
+  overflow-x:auto; border:1px solid var(--rule); border-radius:6px;
+  background:var(--paper-2); padding:18px 16px;
+}
+.figbox svg{display:block; width:100%; min-width:660px; height:auto}
+figcaption{
+  font-family:var(--display); font-size:12.5px; line-height:1.5;
+  color:var(--ink-2); margin-top:11px; max-width:72ch;
+}
+figcaption b{font-weight:600; color:var(--ink)}
+.figbox svg text{font-family:var(--mono); font-size:11px; fill:var(--ink-2)}
+.figbox svg .t{font-family:var(--display); font-weight:600; font-size:11.5px; fill:var(--ink); letter-spacing:.005em}
+.figbox svg .mut{fill:var(--ink-3)}
+.figbox svg .sm{font-size:9.5px}
+.figbox svg .xs{font-size:9px}
+.figbox svg .sig{fill:var(--signal)}
+.figbox svg .stl{fill:var(--steel)}
+
+/* ── component grid ───────────────────────────────────── */
+.comps{
+  display:grid; grid-template-columns:1fr; gap:1px;
+  background:var(--rule-soft); border:1px solid var(--rule-soft);
+  border-radius:6px; overflow:hidden; margin:22px 0; min-width:0;
+}
+@media (min-width:760px){.comps{grid-template-columns:1fr 1fr}}
+.comp{background:var(--paper); padding:14px 16px; min-width:0}
+.comp .head{display:flex; align-items:baseline; gap:9px; margin-bottom:4px; flex-wrap:wrap}
+.cname{font-family:var(--display); font-weight:600; font-size:13.5px; letter-spacing:-.008em}
+.comp p{
+  font-family:var(--display); font-size:12.5px; line-height:1.5;
+  color:var(--ink-2); margin:0;
+}
+.tag{
+  font-family:var(--mono); font-size:9px; font-weight:600;
+  letter-spacing:.11em; text-transform:uppercase;
+  padding:2px 6px; border-radius:3px; white-space:nowrap;
+  border:1px solid var(--rule); color:var(--ink-3);
+}
+.tag.build{color:var(--signal); border-color:var(--signal); background:var(--signal-tint)}
+.tag.adopt{color:var(--steel); border-color:var(--steel); background:var(--steel-tint)}
+
+/* ── tables ───────────────────────────────────────────── */
+.tw{overflow-x:auto; margin:24px 0; border:1px solid var(--rule); border-radius:6px}
+table{border-collapse:collapse; width:100%; min-width:580px; font-family:var(--display)}
+th,td{text-align:left; padding:10px 14px; vertical-align:top; font-size:12.5px; line-height:1.5}
+thead th{
+  font-family:var(--mono); font-size:9.5px; font-weight:600;
+  letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3);
+  background:var(--paper-2); border-bottom:1px solid var(--rule);
+  white-space:nowrap;
+}
+tbody td{border-bottom:1px solid var(--rule-soft); color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+tbody td:first-child{color:var(--ink); font-weight:600; white-space:nowrap}
+td.num{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--ink)}
+
+/* ── trace ────────────────────────────────────────────── */
+.trace{list-style:none; margin:20px 0; padding:0 0 0 0; position:relative}
+.trace li{
+  display:grid; grid-template-columns:88px minmax(0,1fr); gap:14px;
+  padding:0 0 16px 0; position:relative;
+}
+.trace li::before{
+  content:""; position:absolute; left:101px; top:20px; bottom:-4px;
+  width:1px; background:var(--rule);
+}
+.trace li:last-child::before{display:none}
+.lane{
+  font-family:var(--mono); font-size:9px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3); text-align:right;
+  padding-top:3px; white-space:nowrap;
+}
+.lane.plat{color:var(--steel)}
+.lane.human{color:var(--signal)}
+.trace .body{min-width:0; padding-left:14px; position:relative}
+.trace .body::before{
+  content:""; position:absolute; left:-4px; top:7px;
+  width:7px; height:7px; border-radius:50%;
+  background:var(--paper); border:1.5px solid var(--rule);
+}
+.trace .body.human::before{border-color:var(--signal); background:var(--signal)}
+.trace .body.plat::before{border-color:var(--steel)}
+.trace .body b{font-family:var(--display); font-size:13.5px; font-weight:600; display:block; margin-bottom:2px}
+.trace .body span{
+  font-family:var(--display); font-size:12.5px; color:var(--ink-2); line-height:1.5;
+}
+.trace .body code{
+  font-family:var(--mono); font-size:11.5px; background:var(--paper-3);
+  padding:1px 5px; border-radius:3px; color:var(--ink);
+}
+@media (max-width:560px){
+  .trace li{grid-template-columns:1fr; gap:2px}
+  .lane{text-align:left; padding-top:0}
+  .trace li::before{display:none}
+  .trace .body{padding-left:16px}
+}
+
+/* ── ADR ──────────────────────────────────────────────── */
+.adr{
+  border:1px solid var(--rule); border-radius:6px; background:var(--paper-2);
+  padding:18px 20px; margin:16px 0; min-width:0;
+}
+.adr-h{display:flex; gap:11px; align-items:baseline; margin-bottom:12px; flex-wrap:wrap}
+.adr-id{
+  font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.1em;
+  color:var(--signal);
+}
+.adr-h h3{margin:0; font-size:14px}
+.adr dl{margin:0; display:grid; grid-template-columns:76px minmax(0,1fr); gap:6px 14px}
+.adr dt{
+  font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3); padding-top:3px;
+}
+.adr dd{margin:0; font-family:var(--display); font-size:12.5px; line-height:1.55; color:var(--ink-2)}
+@media (max-width:520px){.adr dl{grid-template-columns:1fr; gap:2px 0} .adr dt{margin-top:8px}}
+
+/* ── phases ───────────────────────────────────────────── */
+.phase{
+  border-top:2px solid var(--ink); padding:18px 0 6px; margin-top:26px; min-width:0;
+}
+.phase-h{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px}
+.phase-id{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.12em; color:var(--signal)}
+.phase-h h3{margin:0; font-size:16px}
+.phase-wk{
+  font-family:var(--mono); font-size:10.5px; color:var(--ink-3); margin-left:auto;
+  white-space:nowrap;
+}
+.phase-grid{display:grid; grid-template-columns:1fr; gap:14px 32px}
+@media (min-width:760px){.phase-grid{grid-template-columns:1.35fr 1fr}}
+.phase-grid p{font-family:var(--display); font-size:12.5px; line-height:1.55; color:var(--ink-2); margin:0 0 10px}
+.phase-grid h4{
+  font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:7px;
+}
+ul.tight{margin:0 0 10px; padding-left:17px}
+ul.tight li{font-family:var(--display); font-size:12.5px; line-height:1.55; color:var(--ink-2); margin-bottom:4px}
+ul.tight li::marker{color:var(--ink-3)}
+
+/* ── callout ──────────────────────────────────────────── */
+.callout{
+  border-left:2px solid var(--signal); background:var(--signal-tint);
+  padding:15px 18px; border-radius:0 5px 5px 0; margin:24px 0; min-width:0;
+}
+.callout p{
+  font-family:var(--display); font-size:13px; line-height:1.55;
+  color:var(--ink); margin:0; max-width:70ch;
+}
+.callout p + p{margin-top:9px}
+.callout .k{
+  font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--signal); display:block; margin-bottom:6px;
+}
+
+/* ── rules list ───────────────────────────────────────── */
+.rules{
+  list-style:none; padding:0; margin:22px 0; border-top:1px solid var(--rule);
+  max-width:74ch;
+}
+.rules li{
+  display:grid; grid-template-columns:auto minmax(0,1fr); gap:14px;
+  padding:13px 0; border-bottom:1px solid var(--rule-soft); align-items:baseline;
+}
+.rules .n{
+  font-family:var(--mono); font-size:10px; font-weight:600; color:var(--signal);
+  letter-spacing:.08em;
+}
+.rules b{font-family:var(--display); font-size:13px; font-weight:600; display:block; margin-bottom:2px}
+.rules span{font-family:var(--display); font-size:12.5px; line-height:1.55; color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+
+<div class="shell">
+<nav class="rail" aria-label="Contents">
+  <div class="rail-h">Contents</div>
+  <a href="#thesis">Why a platform</a>
+  <a href="#architecture">Seven planes</a>
+  <a href="#components">Components</a>
+  <a href="#integration">Integration plane</a>
+  <a href="#walkthroughs">Request walks</a>
+  <a href="#targets">Targets &amp; latency</a>
+  <a href="#buildbuy">Build or buy</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#governance">Governance</a>
+  <a href="#decisions">Decisions</a>
+  <a href="#risks">Risk register</a>
+  <a href="#operating">Operating model</a>
+</nav>
+
+<main class="doc">
+
+<header class="hero">
+  <p class="eyebrow">Reference architecture · Retail AI platform</p>
+  <h1>One AI platform behind three channels</h1>
+  <p class="lede">Ecommerce, in-store point of sale and call-centre voice are three products. They are not three AI stacks. This is the platform that serves all three, taken apart layer by layer, with the build-or-buy call made explicit at every step.</p>
+  <dl class="meta">
+    <div><dt>Channels</dt><dd>3</dd></div>
+    <div><dt>Planes</dt><dd>7</dd></div>
+    <div><dt>Delivery</dt><dd>6 phases · 12 months</dd></div>
+    <div><dt>Data residency</dt><dd>AU by default</dd></div>
+  </dl>
+  <p class="note">Written against the brief for an AI-first platform engineer at a multi-channel Australian adventure retailer: a Shopify replatform, a bespoke AI-first POS, and AI voice agents for the call centre. Grounded in a read of the retailer's public storefront, store directory, returns policy and support portal, so the integration inventory describes systems that actually exist rather than ones that might. Component names are generic; the decisions are not.</p>
+</header>
+
+<section id="thesis" class="rule-top">
+  <p class="eyebrow">Thesis</p>
+  <h2>Why a platform, and not three projects</h2>
+  <div class="prose">
+    <p>Run the Shopify replatform, the POS build and the voice agents as three separate projects and they will each grow their own model integration, prompt store, tool layer, evaluation suite and audit trail. Build a capability three times and every change costs three times as much. Worse, every governance question gets three different answers, and none of them is defensible to an auditor.</p>
+    <p>The platform costs more in month one and far less by month nine. What makes it work is being strict about which capabilities are genuinely shared and which are genuinely channel-specific. Almost every failed "AI platform" is a shared layer that swallowed something it had no business owning.</p>
+  </div>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 244" role="img" aria-label="Left: the same four AI capabilities built once inside each of three channels, tripled. Right: one shared slab of those four capabilities with three thin channel adapters on top.">
+        <text class="xs" x="16" y="16" fill="var(--ink-3)" letter-spacing="1.4">RUN AS THREE PROJECTS</text>
+        <text class="xs" x="532" y="16" fill="var(--ink-3)" letter-spacing="1.4">RUN AS ONE PLATFORM</text>
+
+        <!-- left: three stacks -->
+        <g>
+          <rect x="16" y="30" width="136" height="26" rx="3" fill="var(--paper-3)"/>
+          <text class="t" x="26" y="47" font-size="11">Storefront</text>
+          <rect x="172" y="30" width="136" height="26" rx="3" fill="var(--paper-3)"/>
+          <text class="t" x="182" y="47" font-size="11">POS</text>
+          <rect x="328" y="30" width="136" height="26" rx="3" fill="var(--paper-3)"/>
+          <text class="t" x="338" y="47" font-size="11">Voice</text>
+
+          <g fill="var(--paper-3)" stroke="var(--rule)">
+            <rect x="16" y="66" width="136" height="24" rx="2"/>
+            <rect x="16" y="96" width="136" height="24" rx="2"/>
+            <rect x="16" y="126" width="136" height="24" rx="2"/>
+            <rect x="16" y="156" width="136" height="24" rx="2"/>
+            <rect x="172" y="66" width="136" height="24" rx="2"/>
+            <rect x="172" y="96" width="136" height="24" rx="2"/>
+            <rect x="172" y="126" width="136" height="24" rx="2"/>
+            <rect x="172" y="156" width="136" height="24" rx="2"/>
+            <rect x="328" y="66" width="136" height="24" rx="2"/>
+            <rect x="328" y="96" width="136" height="24" rx="2"/>
+            <rect x="328" y="126" width="136" height="24" rx="2"/>
+            <rect x="328" y="156" width="136" height="24" rx="2"/>
+          </g>
+          <g class="sm mut" fill="var(--ink-3)">
+            <text x="26" y="82">Model access</text><text x="26" y="112">Prompts</text>
+            <text x="26" y="142">Tool mesh</text><text x="26" y="172">Evals, tracing</text>
+            <text x="182" y="82">Model access</text><text x="182" y="112">Prompts</text>
+            <text x="182" y="142">Tool mesh</text><text x="182" y="172">Evals, tracing</text>
+            <text x="338" y="82">Model access</text><text x="338" y="112">Prompts</text>
+            <text x="338" y="142">Tool mesh</text><text x="338" y="172">Evals, tracing</text>
+          </g>
+          <text class="xs mut" x="16" y="212">Three of each. Three runbooks. Three audit answers.</text>
+        </g>
+
+        <!-- divider -->
+        <line x1="494" y1="24" x2="494" y2="220" stroke="var(--rule)" stroke-dasharray="3 4"/>
+
+        <!-- right: three adapters over one slab -->
+        <g>
+          <rect x="532" y="30" width="136" height="26" rx="3" fill="var(--paper-3)"/>
+          <text class="t" x="542" y="47" font-size="11">Storefront</text>
+          <rect x="688" y="30" width="136" height="26" rx="3" fill="var(--paper-3)"/>
+          <text class="t" x="698" y="47" font-size="11">POS</text>
+          <rect x="844" y="30" width="136" height="26" rx="3" fill="var(--paper-3)"/>
+          <text class="t" x="854" y="47" font-size="11">Voice</text>
+
+          <rect x="532" y="66" width="448" height="114" rx="4" fill="var(--paper-3)" stroke="var(--rule)"/>
+          <g fill="var(--paper)" stroke="var(--rule-soft)">
+            <rect x="536" y="70" width="440" height="24" rx="2"/>
+            <rect x="536" y="100" width="440" height="24" rx="2"/>
+            <rect x="536" y="130" width="440" height="24" rx="2"/>
+            <rect x="536" y="160" width="440" height="16" rx="2" fill="none" stroke="none"/>
+          </g>
+          <g class="sm">
+            <text x="546" y="86" fill="var(--ink)">Model access</text>
+            <text x="546" y="116" fill="var(--ink)">Prompts &amp; agent registry</text>
+            <text x="546" y="146" fill="var(--ink)">Tool mesh (MCP servers)</text>
+            <text x="952" y="86" text-anchor="end" fill="var(--signal)">shared ×1</text>
+            <text x="952" y="116" text-anchor="end" fill="var(--signal)">shared ×1</text>
+            <text x="952" y="146" text-anchor="end" fill="var(--signal)">shared ×1</text>
+          </g>
+          <text class="sm mut" x="546" y="172" fill="var(--ink-3)">Evals, tracing, guardrails, cost control</text>
+          <text class="xs mut" x="532" y="212">One of each. One change reaches all three channels.</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>The same four capabilities, three times over or once.</b> Everything below the channel tabs is shared infrastructure. An improvement to retrieval, a cost control on the model gateway, or a new guardrail lands in all three channels at once, and there is a single audit trail to answer "what did the AI do, and why".</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>What is genuinely shared</h3>
+    <p>Model access, routing and cost control. Tool access to systems of record, which is the expensive part. Retrieval over product, fitment and policy knowledge. Session and customer memory. Guardrails, PII handling and audit. Evaluation, tracing and release gates. Prompt and agent versioning.</p>
+    <h3>What is genuinely channel-specific</h3>
+    <p>The transport: HTTP and server-sent events at one end, streaming audio at the other. The turn-taking model, because a caller expects an answer in under a second and a storefront shopper does not. The interaction contract, since a voice agent must say it is an AI and a staff copilot must not pretend to be the manager. And the fallback path, because a lost WAN link means something very different in a Campbelltown store than in a browser tab.</p>
+  </div>
+
+  <ul class="rules">
+    <li><span class="n">RULE 1</span><span><b>The channel owns interaction.</b>Turn-taking, transport, disclosure and the degraded path live in the channel adapter, and nowhere else.</span></li>
+    <li><span class="n">RULE 2</span><span><b>The platform owns intelligence.</b>Models, tools, retrieval, memory, guardrails and evals are shared services with their own owners, versions and SLAs.</span></li>
+    <li><span class="n">RULE 3</span><span><b>The systems of record own truth.</b>The agent never becomes the source of a price, a stock level or a fitment. It reads them, cites them, and writes back through a governed path.</span></li>
+  </ul>
+
+  <div class="callout">
+    <p><span class="k">The tell</span>When a component starts making decisions in two planes at once, it is a bug. A prompt that formats a phone number for a voice agent has crossed into the channel. A policy rule hard-coded in the POS adapter has crossed out of governance.</p>
+  </div>
+</section>
+
+<section id="architecture" class="rule-top">
+  <p class="eyebrow">Architecture</p>
+  <h2>Seven planes</h2>
+  <div class="prose">
+    <p>Read the stack from the bottom up. Systems of record hold the truth. Plane 3 reaches into them through a governed tool mesh. Plane 4 assembles the context an answer needs. Plane 5 supplies the intelligence for one turn. Plane 6 turns that into a multi-step task with memory, guardrails and an escape hatch. Plane 7 speaks to a human in whatever medium they arrived in. Plane 1 runs down the side, because privacy, security, evaluation and audit are not a layer you pass through, they are constraints on every call in every other plane.</p>
+    <p>Requests flow up. Actions flow down. Every hop between planes crosses a versioned contract.</p>
+  </div>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1040 700" role="img" aria-label="Seven-plane stack: channels on top, then agent orchestration, model, context and data, integration, platform engineering, and systems of record below. A full-height band on the right covers governance, risk and compliance as a cross-cutting plane.">
+        <!-- governance band -->
+        <rect x="838" y="24" width="188" height="632" rx="4" fill="var(--signal-tint)" stroke="var(--signal)"/>
+        <text class="t sig" x="852" y="46" font-size="11">P1  Governance</text>
+        <text class="xs sig" x="852" y="60" letter-spacing="1.1">CROSS-CUTTING</text>
+        <line x1="852" y1="70" x2="1012" y2="70" stroke="var(--signal)" opacity="0.45"/>
+        <g class="sm" fill="var(--ink-2)">
+          <text x="852" y="98">Use-case intake</text>
+          <text x="852" y="146">Risk tiering</text>
+          <text x="852" y="194">Privacy Act &amp; APPs</text>
+          <text x="852" y="242">AU data residency</text>
+          <text x="852" y="290">ACMA / DNC rules</text>
+          <text x="852" y="338">PCI DSS v4.0</text>
+          <text x="852" y="386">ACCC grounding</text>
+          <text x="852" y="434">Eval &amp; red-team</text>
+          <text x="852" y="482">Audit &amp; lineage</text>
+          <text x="852" y="530">Tool allowlists</text>
+          <text x="852" y="578">Retention &amp; erasure</text>
+          <text x="852" y="626">Kill switch</text>
+        </g>
+        <g stroke="var(--signal)" opacity="0.4" stroke-dasharray="2 3">
+          <line x1="852" y1="118" x2="1012" y2="118"/><line x1="852" y1="166" x2="1012" y2="166"/>
+          <line x1="852" y1="214" x2="1012" y2="214"/><line x1="852" y1="262" x2="1012" y2="262"/>
+          <line x1="852" y1="310" x2="1012" y2="310"/><line x1="852" y1="358" x2="1012" y2="358"/>
+          <line x1="852" y1="406" x2="1012" y2="406"/><line x1="852" y1="454" x2="1012" y2="454"/>
+          <line x1="852" y1="502" x2="1012" y2="502"/><line x1="852" y1="550" x2="1012" y2="550"/>
+          <line x1="852" y1="598" x2="1012" y2="598"/>
+        </g>
+
+        <!-- P7 channels -->
+        <rect x="16" y="24" width="804" height="64" rx="4" fill="var(--paper-3)" stroke="var(--rule)"/>
+        <text class="t" x="30" y="50" font-size="11">P7  Channels</text>
+        <text class="xs mut" x="30" y="66">interaction</text>
+        <g fill="var(--paper)" stroke="var(--rule)">
+          <rect x="164" y="40" width="120" height="32" rx="3"/>
+          <rect x="294" y="40" width="120" height="32" rx="3"/>
+          <rect x="424" y="40" width="120" height="32" rx="3"/>
+          <rect x="554" y="40" width="120" height="32" rx="3"/>
+          <rect x="684" y="40" width="120" height="32" rx="3"/>
+        </g>
+        <g class="sm" text-anchor="middle" fill="var(--ink)">
+          <text x="224" y="60">Storefront</text><text x="354" y="60">In-store POS</text>
+          <text x="484" y="60">Voice agent</text><text x="614" y="60">Staff copilot</text>
+          <text x="744" y="60">Agent ops</text>
+        </g>
+
+        <!-- P6 -->
+        <rect x="16" y="100" width="804" height="84" rx="4" fill="var(--paper-2)" stroke="var(--rule)"/>
+        <text class="t" x="30" y="126" font-size="11">P6  Agent &amp; orchestration</text>
+        <text class="xs mut" x="30" y="142">the task</text>
+        <g fill="var(--paper)" stroke="var(--rule)">
+          <rect x="164" y="134" width="120" height="34" rx="3"/>
+          <rect x="294" y="134" width="120" height="34" rx="3"/>
+          <rect x="424" y="134" width="120" height="34" rx="3"/>
+          <rect x="554" y="134" width="120" height="34" rx="3"/>
+          <rect x="684" y="134" width="120" height="34" rx="3"/>
+        </g>
+        <g class="sm" text-anchor="middle" fill="var(--ink)">
+          <text x="224" y="148">Session &amp;</text><text x="224" y="161">memory</text>
+          <text x="354" y="148">Intent</text><text x="354" y="161">router</text>
+          <text x="484" y="148">Agent</text><text x="484" y="161">runtime</text>
+          <text x="614" y="148">Guardrails</text><text x="614" y="161">&amp; policy</text>
+          <text x="744" y="148">Escalation</text><text x="744" y="161">&amp; handoff</text>
+        </g>
+
+        <!-- P5 -->
+        <rect x="16" y="196" width="804" height="84" rx="4" fill="var(--paper-2)" stroke="var(--rule)"/>
+        <text class="t" x="30" y="222" font-size="11">P5  Model</text>
+        <text class="xs mut" x="30" y="238">the intelligence</text>
+        <g fill="var(--paper)" stroke="var(--rule)">
+          <rect x="164" y="230" width="120" height="34" rx="3"/>
+          <rect x="294" y="230" width="120" height="34" rx="3"/>
+          <rect x="424" y="230" width="120" height="34" rx="3"/>
+          <rect x="554" y="230" width="120" height="34" rx="3"/>
+          <rect x="684" y="230" width="120" height="34" rx="3"/>
+        </g>
+        <g class="sm" text-anchor="middle" fill="var(--ink)">
+          <text x="224" y="244">Model</text><text x="224" y="257">gateway</text>
+          <text x="354" y="244">Frontier</text><text x="354" y="257">LLM</text>
+          <text x="484" y="244">Fast</text><text x="484" y="257">LLM</text>
+          <text x="614" y="244">Speech</text><text x="614" y="257">STT / TTS</text>
+          <text x="744" y="244">Embed &amp;</text><text x="744" y="257">rerank</text>
+        </g>
+
+        <!-- P4 -->
+        <rect x="16" y="292" width="804" height="84" rx="4" fill="var(--paper-2)" stroke="var(--rule)"/>
+        <text class="t" x="30" y="318" font-size="11">P4  Context &amp; data</text>
+        <text class="xs mut" x="30" y="334">the grounding</text>
+        <g fill="var(--paper)" stroke="var(--rule)">
+          <rect x="164" y="326" width="120" height="34" rx="3"/>
+          <rect x="294" y="326" width="120" height="34" rx="3"/>
+          <rect x="424" y="326" width="120" height="34" rx="3"/>
+          <rect x="554" y="326" width="120" height="34" rx="3"/>
+          <rect x="684" y="326" width="120" height="34" rx="3"/>
+        </g>
+        <g class="sm" text-anchor="middle" fill="var(--ink)">
+          <text x="224" y="340">Hybrid</text><text x="224" y="353">retrieval</text>
+          <text x="354" y="340">Knowledge</text><text x="354" y="353">corpus</text>
+          <text x="484" y="340">Fitment</text><text x="484" y="353">graph</text>
+          <text x="614" y="340">Customer</text><text x="614" y="353">360</text>
+          <text x="744" y="340">Semantic</text><text x="744" y="353">layer</text>
+        </g>
+
+        <!-- P3 -->
+        <rect x="16" y="388" width="804" height="84" rx="4" fill="var(--paper-2)" stroke="var(--rule)"/>
+        <text class="t" x="30" y="414" font-size="11">P3  Integration</text>
+        <text class="xs mut" x="30" y="430">the reach</text>
+        <g fill="var(--paper)" stroke="var(--rule)">
+          <rect x="164" y="422" width="120" height="34" rx="3"/>
+          <rect x="294" y="422" width="120" height="34" rx="3"/>
+          <rect x="424" y="422" width="120" height="34" rx="3"/>
+          <rect x="554" y="422" width="120" height="34" rx="3"/>
+          <rect x="684" y="422" width="120" height="34" rx="3"/>
+        </g>
+        <g class="sm" text-anchor="middle" fill="var(--ink)">
+          <text x="224" y="436">MCP</text><text x="224" y="449">server fleet</text>
+          <text x="354" y="436">Event</text><text x="354" y="449">backbone</text>
+          <text x="484" y="436">API gateway</text><text x="484" y="449">&amp; auth</text>
+          <text x="614" y="436">Write-safety</text><text x="614" y="449">layer</text>
+          <text x="744" y="436">CDC &amp;</text><text x="744" y="449">webhooks</text>
+        </g>
+
+        <!-- P2 -->
+        <rect x="16" y="484" width="804" height="84" rx="4" fill="var(--paper-2)" stroke="var(--rule)"/>
+        <text class="t" x="30" y="510" font-size="11">P2  Platform eng.</text>
+        <text class="xs mut" x="30" y="526">the ship path</text>
+        <g fill="var(--paper)" stroke="var(--rule)">
+          <rect x="164" y="518" width="120" height="34" rx="3"/>
+          <rect x="294" y="518" width="120" height="34" rx="3"/>
+          <rect x="424" y="518" width="120" height="34" rx="3"/>
+          <rect x="554" y="518" width="120" height="34" rx="3"/>
+          <rect x="684" y="518" width="120" height="34" rx="3"/>
+        </g>
+        <g class="sm" text-anchor="middle" fill="var(--ink)">
+          <text x="224" y="532">IaC &amp;</text><text x="224" y="545">CI/CD</text>
+          <text x="354" y="532">Eval</text><text x="354" y="545">harness</text>
+          <text x="484" y="532">Tracing</text><text x="484" y="545">&amp; cost</text>
+          <text x="614" y="532">Prompt</text><text x="614" y="545">registry</text>
+          <text x="744" y="532">Flags &amp;</text><text x="744" y="545">secrets</text>
+        </g>
+
+        <!-- systems of record -->
+        <rect x="16" y="580" width="804" height="76" rx="4" fill="var(--ink)" stroke="var(--ink)"/>
+        <text class="t" x="30" y="608" font-size="11" fill="var(--paper)">Systems of record</text>
+        <text class="xs" x="30" y="624" fill="var(--paper)" opacity="0.62">the truth</text>
+        <g fill="var(--paper)" opacity="0.11">
+          <rect x="164" y="596" width="100" height="44" rx="3"/>
+          <rect x="272" y="596" width="100" height="44" rx="3"/>
+          <rect x="380" y="596" width="100" height="44" rx="3"/>
+          <rect x="488" y="596" width="100" height="44" rx="3"/>
+          <rect x="596" y="596" width="100" height="44" rx="3"/>
+          <rect x="704" y="596" width="100" height="44" rx="3"/>
+        </g>
+        <g class="sm" text-anchor="middle" fill="var(--paper)">
+          <text x="214" y="616">Shopify</text><text x="214" y="629">Plus</text>
+          <text x="322" y="616">POS</text><text x="322" y="629">database</text>
+          <text x="430" y="616">ERP &amp;</text><text x="430" y="629">finance</text>
+          <text x="538" y="616">WMS &amp;</text><text x="538" y="629">stock</text>
+          <text x="646" y="616">CRM</text><text x="646" y="629">&amp; loyalty</text>
+          <text x="754" y="616">PIM /</text><text x="754" y="629">fitment</text>
+        </g>
+
+        <!-- flow chevrons -->
+        <g stroke="var(--ink-3)" fill="none" stroke-width="1.3">
+          <polyline points="296,97 301,92 306,97"/><polyline points="556,97 561,92 566,97"/>
+          <polyline points="296,193 301,188 306,193"/><polyline points="556,193 561,188 566,193"/>
+          <polyline points="296,289 301,284 306,289"/><polyline points="556,289 561,284 566,289"/>
+          <polyline points="296,385 301,380 306,385"/><polyline points="556,385 561,380 566,385"/>
+          <polyline points="296,481 301,476 306,481"/><polyline points="556,481 561,476 566,481"/>
+          <polyline points="296,577 301,572 306,577"/><polyline points="556,577 561,572 566,577"/>
+        </g>
+
+        <text class="xs mut" x="16" y="678">Requests flow up · actions flow down · every hop crosses a versioned contract</text>
+      </svg>
+    </div>
+    <figcaption><b>The seven planes.</b> Plane 1 runs the full height because it constrains every call in every other plane rather than being a stage a request passes through. Note that the model planes (P5) are the thinnest and the least interesting: the architecture's weight sits in P3 reaching systems of record and P4 grounding answers in them.</figcaption>
+  </figure>
+</section>
+
+<section id="components" class="rule-top">
+  <p class="eyebrow">Component inventory</p>
+  <h2>What each plane is made of</h2>
+  <div class="prose">
+    <p>Each entry carries a build-or-buy call. The reasoning behind the calls is set out in <a href="#buildbuy">Build or buy</a>; the short version is that commodity intelligence gets bought, connective tissue and domain knowledge get built.</p>
+  </div>
+
+  <h3>P7 · Channels</h3>
+  <p class="prose">Thin adapters. Each one owns transport, turn-taking and the degraded path, and nothing else. Target: under 1,500 lines each.</p>
+  <div class="comps">
+    <div class="comp"><div class="head"><span class="cname">Storefront assistant</span><span class="tag adopt">adopt + extend</span></div><p>Shopify theme app extension against the Storefront API. Falls back to native search when the agent is unavailable.</p></div>
+    <div class="comp"><div class="head"><span class="cname">In-store POS copilot</span><span class="tag build">build</span></div><p>Staff-facing surface inside the bespoke POS. Runs against a local inference path so it survives a WAN outage.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Voice agent</span><span class="tag build">build</span></div><p>Telephony leg, streaming speech, barge-in, disclosure. The tightest latency budget in the system.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Staff copilot</span><span class="tag build">build</span></div><p>Internal surface in Slack or Teams. Doubles as the lowest-risk proving ground for the whole platform.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Agent ops console</span><span class="tag build">build</span></div><p>Escalation queue, transcript replay, live containment and cost, per-agent kill switch. Non-negotiable from day one.</p></div>
+  </div>
+
+  <h3>P6 · Agent &amp; orchestration</h3>
+  <p class="prose">The plane that turns a single model call into a task with memory, limits and an escape hatch.</p>
+  <div class="comps">
+    <div class="comp"><div class="head"><span class="cname">Session service</span><span class="tag build">build</span></div><p>Channel-agnostic conversation state. A call, a chat and a POS session all resolve to one thread id, so context survives a handoff.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Intent router</span><span class="tag buy">buy</span></div><p>Fast model classifies the turn and decides: cached answer, direct response, tool call, or straight to a human. The main latency and cost lever.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Agent runtime</span><span class="tag buy">buy</span></div><p>Tool-calling loop with hard budgets: maximum tool calls, tokens and wall-clock per turn. Frameworks are commodity; budget enforcement is not.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Guardrail engine</span><span class="tag build">build</span></div><p>Input filters for injection and off-domain asks, output filters for groundedness, tone and invented values, and PII redaction on both sides.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Escalation &amp; handoff</span><span class="tag build">build</span></div><p>Triggers on low confidence, sentiment, explicit request, complaint, legal or safety. Hands over a generated summary, not a cold transfer.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Agent &amp; prompt registry</span><span class="tag build">build</span></div><p>Agents, prompts and tool bindings as versioned git artefacts with an owner, a changelog and a recorded eval score.</p></div>
+  </div>
+
+  <h3>P5 · Model</h3>
+  <p class="prose">One interface to every model, so no channel ever calls a provider SDK directly.</p>
+  <div class="comps">
+    <div class="comp"><div class="head"><span class="cname">Model gateway</span><span class="tag build">build</span></div><p>Policy-based routing on task, latency, cost and data class. Handles fallback, retries, caching, rate limits and per-cost-centre token accounting.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Frontier model</span><span class="tag buy">buy</span></div><p>Reserved for hard turns: ambiguous fitment, multi-step policy reasoning, complaint handling. Routed to an Australian region when the payload carries personal data.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Fast model</span><span class="tag buy">buy</span></div><p>Routing, classification, extraction, summarisation. Carries most traffic at a fraction of the cost and a third of the latency.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Speech stack</span><span class="tag buy">buy</span></div><p>Streaming STT with partial hypotheses and streaming TTS optimised for first-byte time. Behind an abstraction, because this market moves fastest.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Embeddings &amp; reranker</span><span class="tag buy">buy</span></div><p>Embedding model for the corpus index plus a cross-encoder reranker. Retrieval quality is mostly reranking, not embedding choice.</p></div>
+  </div>
+
+  <h3>P4 · Context &amp; data</h3>
+  <p class="prose">Where a generic assistant becomes this retailer's assistant. Most of the raw material already exists in some form; almost none of it exists in a shape an agent can use.</p>
+  <div class="comps">
+    <div class="comp"><div class="head"><span class="cname">Retrieval service</span><span class="tag build">build</span></div><p>Hybrid lexical and vector search, metadata filters, rerank, and citation capture so every claim traces to a source document.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Knowledge corpus</span><span class="tag build">build</span></div><p>Roughly 87 articles are already published across Tips &amp; Techniques, Complete Guides and DIY Projects, plus policy, freight and store operations material. It needs intent classification before it is usable, because destination content such as "Best Camping Spots Near Dandenong" is marketing rather than support and must never surface in a service answer.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Vehicle configuration model</span><span class="tag build">build</span></div><p>Not a fitment matrix. The catalogue is universal-fit and named by dimension, so the asset is a model of the customer's vehicle and build: tub length and configuration, canopy or hard lid, roof load rating, existing 12V capacity, mounting interfaces. The hardest and most defensible thing in this architecture.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Policy rules engine</span><span class="tag build">build</span></div><p>Returns and warranty are rules, not prose: 30 days, store credit only, authorisation before return, exclusions for clearance and Scratch &amp; Dent. Stored as date-versioned rules, because the published policy amends without notice and an agent quoting a superseded version is worse than one that defers.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Customer 360</span><span class="tag build">build</span></div><p>Identity resolution across POS, ecommerce, loyalty and CRM, so a caller is recognised whichever door they came through, with their wholesale tier and purchase channel attached.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Ingestion pipeline</span><span class="tag build">build</span></div><p>Connectors, change detection, freshness SLAs, ACL propagation, and a classification pass that tags every document by intent before it reaches an index.</p></div>
+  </div>
+
+  <h3>P3 · Integration</h3>
+  <p class="prose">Covered in full in the next section. This plane is where most AI programmes quietly fail.</p>
+  <div class="comps">
+    <div class="comp"><div class="head"><span class="cname">MCP server fleet</span><span class="tag build">build</span></div><p>One typed server per system of record. The contract between agents and the business.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Event backbone</span><span class="tag buy">buy</span></div><p>Order placed, stock moved, call started, cart abandoned. Feeds proactive behaviour and keeps context warm.</p></div>
+    <div class="comp"><div class="head"><span class="cname">API gateway &amp; auth</span><span class="tag buy">buy</span></div><p>One service identity per agent, scoped tokens, quotas and rate limits. No agent holds a human's credentials.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Write-safety layer</span><span class="tag build">build</span></div><p>Every agent-initiated write is idempotent, staged for human approval, or compensable. Read first, propose second, commit third.</p></div>
+    <div class="comp"><div class="head"><span class="cname">CDC &amp; webhooks</span><span class="tag build">build</span></div><p>Change data capture from systems of record so the context plane is minutes stale at worst, not overnight.</p></div>
+    <div class="comp"><div class="head"><span class="cname">iPaaS connector</span><span class="tag buy">buy</span></div><p>For long-tail internal systems that do not justify a bespoke server. A holding pen, not a destination.</p></div>
+  </div>
+
+  <h3>P2 · Platform engineering</h3>
+  <p class="prose">How the team ships, and the plane that makes AI changes safe to release on a Tuesday afternoon.</p>
+  <div class="comps">
+    <div class="comp"><div class="head"><span class="cname">IaC &amp; CI/CD</span><span class="tag build">build</span></div><p>Terraform for infrastructure, ephemeral preview environments per branch, standard pipelines for services and prompts alike.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Eval harness</span><span class="tag build">build</span></div><p>Golden datasets per agent, scored automatically on every pull request. A prompt cannot reach production without a passing eval delta.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Tracing &amp; cost</span><span class="tag buy">buy</span></div><p>Distributed traces across speech, router, tools, model and output, with token and dollar cost attributed per channel and per conversation.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Prompt registry</span><span class="tag build">build</span></div><p>Prompts as versioned artefacts with rollback, so a prompt change is a deployable unit with an audit trail rather than a dashboard edit.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Flags &amp; rollout</span><span class="tag buy">buy</span></div><p>Shadow mode lets a new agent listen alongside the live one before it is allowed to speak. Canary by store, by queue, by percentage.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Secrets &amp; KMS</span><span class="tag buy">buy</span></div><p>Managed keys, egress allowlists, and a network boundary that makes the model gateway the only path out.</p></div>
+  </div>
+</section>
+
+<section id="integration" class="rule-top">
+  <p class="eyebrow">Plane 3</p>
+  <h2>The integration plane is the product</h2>
+  <div class="prose">
+    <p>AI programmes rarely fail on models. They fail on plumbing. The model is a weekend's work; getting a governed, typed, auditable read and write into a fifteen-year-old ERP is a quarter.</p>
+    <p>So the integration plane gets treated as the platform's main deliverable. Every system of record exposes a Model Context Protocol server: a small, typed, versioned surface that declares exactly which operations an agent may perform, with what arguments, under which credential. Agents never speak REST. They never hold a database credential. They call tools.</p>
+    <p>The payoff is that integration becomes a reusable asset instead of glue buried in a prompt. A new agent gets the whole business on day one. A security review covers one surface rather than nine. And when the ERP is replaced, one server changes and no agent knows.</p>
+  </div>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="A tool call travelling from the agent runtime through the MCP client, an MCP server, and a scoped credential, into a system of record, returning a grounded result, with write safety, credential scoping and audit applied at each hop.">
+        <!-- main row -->
+        <g fill="var(--paper)" stroke="var(--rule)">
+          <rect x="24" y="50" width="128" height="74" rx="4"/>
+          <rect x="216" y="50" width="128" height="74" rx="4"/>
+          <rect x="408" y="50" width="128" height="74" rx="4"/>
+          <rect x="600" y="50" width="128" height="74" rx="4"/>
+          <rect x="792" y="50" width="168" height="74" rx="4" fill="var(--ink)"/>
+        </g>
+        <g class="t" text-anchor="middle">
+          <text x="88" y="80">Agent</text><text x="88" y="94">runtime</text>
+          <text x="280" y="80">MCP</text><text x="280" y="94">client</text>
+          <text x="472" y="80">MCP</text><text x="472" y="94">server</text>
+          <text x="664" y="80">Auth &amp;</text><text x="664" y="94">scope</text>
+        </g>
+        <text class="t" x="876" y="88" text-anchor="middle" fill="var(--paper)">System of</text>
+        <text class="t" x="876" y="102" text-anchor="middle" fill="var(--paper)">record</text>
+
+        <g class="xs mut" text-anchor="middle">
+          <text x="280" y="114">allowlist per agent</text>
+          <text x="472" y="114">one per system</text>
+          <text x="664" y="114">service identity</text>
+        </g>
+
+        <!-- forward arrows -->
+        <g stroke="var(--ink-2)" stroke-width="1.3" fill="none">
+          <line x1="152" y1="87" x2="212" y2="87" marker-end="url(#ah)"/>
+          <line x1="344" y1="87" x2="404" y2="87" marker-end="url(#ah)"/>
+          <line x1="536" y1="87" x2="596" y2="87" marker-end="url(#ah)"/>
+          <line x1="728" y1="87" x2="788" y2="87" marker-end="url(#ah)"/>
+        </g>
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-2)"/>
+          </marker>
+          <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-3)"/>
+          </marker>
+        </defs>
+        <g class="xs mut" text-anchor="middle">
+          <text x="185" y="80">invoke</text>
+          <text x="377" y="80">typed tool</text>
+          <text x="569" y="80">credential</text>
+          <text x="761" y="80">read/write</text>
+        </g>
+
+        <!-- return path -->
+        <path d="M 876 124 L 876 160 L 88 160 L 88 128" fill="none" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ah2)"/>
+        <text class="xs mut" x="482" y="153" text-anchor="middle">grounded result + citation, or a typed failure</text>
+
+        <!-- governance annotation -->
+        <line x1="472" y1="124" x2="472" y2="188" stroke="var(--rule)" stroke-dasharray="3 3"/>
+        <rect x="216" y="188" width="512" height="86" rx="4" fill="var(--signal-tint)" stroke="var(--signal)" stroke-dasharray="4 3"/>
+        <text class="xs sig" x="232" y="208" letter-spacing="1.2">APPLIED AT EVERY HOP</text>
+        <g class="sm">
+          <text x="232" y="228" fill="var(--signal)">Write safety</text>
+          <text x="400" y="228" fill="var(--signal)">Scoped credentials</text>
+          <text x="568" y="228" fill="var(--signal)">Audit record</text>
+          <text x="232" y="242" fill="var(--ink-2)">idempotent or staged</text>
+          <text x="400" y="242" fill="var(--ink-2)">one identity per</text>
+          <text x="568" y="242" fill="var(--ink-2)">tool, args, scope,</text>
+          <text x="232" y="255" fill="var(--ink-2)">for approval</text>
+          <text x="400" y="255" fill="var(--ink-2)">agent, least privilege</text>
+          <text x="568" y="255" fill="var(--ink-2)">latency and reason</text>
+        </g>
+        <text class="xs mut" x="24" y="292">One server per system · tools are typed, versioned and scoped · no write bypasses the approval path</text>
+      </svg>
+    </div>
+    <figcaption><b>One tool call, end to end.</b> The agent holds no credentials and knows no endpoints. It holds a list of permitted tool names, and the MCP server is the only thing that knows how to talk to the system behind it. Writes take the same path but stop at the approval gate before the credential is minted.</figcaption>
+  </figure>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>System of record</th><th>Tools it exposes</th><th>Access</th><th>Why the agent needs it</th></tr></thead>
+      <tbody>
+        <tr><td>Shopify Plus</td><td><code>order.get</code>, <code>order.status</code>, <code>cart.recover</code>, <code>product.search</code>, <code>return.request</code></td><td class="num">read · gated write</td><td>Order status, post-purchase service, returns intake</td></tr>
+        <tr><td>POS database</td><td><code>sale.lookup</code>, <code>txn.history</code>, <code>refund.propose</code></td><td class="num">read · propose only</td><td>In-store sale history and the approval position for a return</td></tr>
+        <tr><td>Store stock <span class="tag build">build</span></td><td><code>stock.companyStore</code>, <code>stock.transferEta</code></td><td class="num">read</td><td>Store-level stock is not exposed anywhere today. It has to exist before the agent can answer the most common question it will be asked</td></tr>
+        <tr><td>Stockist directory <span class="tag build">build</span></td><td><code>stockist.locate</code>, <code>stockist.confirm</code></td><td class="num">read</td><td>Roughly 144 third-party outlets with no stock visibility at all. The agent may only ever say "call to confirm"</td></tr>
+        <tr><td>Store directory <span class="tag build">build</span></td><td><code>store.locate</code>, <code>store.hours</code>, <code>clickcollect.request</code></td><td class="num">read · write</td><td>Per-store trading hours are not published per store, and Click &amp; Collect is arranged by phone</td></tr>
+        <tr><td>ERP &amp; finance</td><td><code>invoice.get</code>, <code>credit.status</code>, <code>supplier.eta</code></td><td class="num">read</td><td>Trade accounts, backorder dates, freight cost</td></tr>
+        <tr><td>WMS &amp; warehouse</td><td><code>inventory.bySku</code>, <code>backorder.eta</code>, <code>shipment.stage</code></td><td class="num">read</td><td>National position. Distinct from store stock, and the two must never be conflated</td></tr>
+        <tr><td>CRM &amp; loyalty</td><td><code>customer.get</code>, <code>interaction.log</code>, <code>tier.get</code>, <code>wholesale.eligibility</code></td><td class="num">read · gated write</td><td>Wholesale pricing unlocks at four or more items, so eligibility changes what a quoted price should be</td></tr>
+        <tr><td>PIM / catalogue</td><td><code>product.get</code>, <code>variant.get</code>, <code>specs.get</code>, <code>stockclass.flag</code></td><td class="num">read</td><td>Clearance, factory seconds and Scratch &amp; Dent carry different return rights, so the class is part of the answer</td></tr>
+        <tr><td>Returns &amp; warranty</td><td><code>returns.authorise</code>, <code>warranty.assess</code>, <code>credit.issue</code></td><td class="num">gated write, human approves</td><td>No return is processed without approval, and faulty items are assessed before a claim is finalised</td></tr>
+        <tr><td>Payments</td><td><code>payment.link</code>, <code>payment.status</code></td><td class="num">write, no PAN</td><td>Afterpay, Zip and PayPal are offered. Card data never enters a voice or chat context</td></tr>
+        <tr><td>Freight &amp; carriers</td><td><code>shipment.track</code>, <code>delivery.book</code></td><td class="num">read · gated write</td><td>"Where is my order", and booking a fitting or collection slot</td></tr>
+        <tr><td>Help centre</td><td><code>route.sales</code>, <code>route.tracking</code>, <code>route.returns</code>, <code>route.general</code></td><td class="num">write</td><td>Escalations land in the four queues staff already work, instead of a fifth one nobody monitors</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <p><span class="k">The gap the site reveals</span>Store-level stock is not exposed anywhere. Today the only way to find out whether a Campbelltown store has an item is to phone 1800 88 39 64 and ask, and Click &amp; Collect is arranged on that same call. That is the most common reason a customer rings, and the business cannot currently answer it in software. No agent fix for "have you got it at Campbelltown" can exist until that data does.</p>
+    <p>Alongside it sit roughly 144 third-party stockists, mostly hardware chains like Mitre 10, Home Hardware, True Value and Autopro, holding stock the business has no visibility into whatsoever. The agent must be able to say "call the store to confirm" without ever implying an availability it cannot verify. A wasted trip is the most expensive failure this system can produce.</p>
+  </div>
+
+  <div class="callout">
+    <p><span class="k">Correcting an earlier assumption</span>The first version of this architecture called for a fitment graph: make, model, year and variant matched against part. The catalogue says otherwise. Products are named by size and capacity, not by vehicle: 900mm and 1300mm drawers, a 12,000lb winch, 20, 30 and 40 inch lightbars, and one roof rack sold as a "Universal Ute Tub Rack". No vehicle data appears anywhere, and bull bars and suspension are not listed at all. There is no fitment matrix to buy or build.</p>
+    <p>The question does not disappear, it changes shape. "Will this fit my ute" becomes a constraint problem: whether 900mm drawers suit this tub, which varies by cab configuration, and whether a hard lid or canopy is fitted. Whether a roof top tent's weight sits under this vehicle's roof load rating, and whether cross bars are needed. Whether a lightbar of this width fouls this nudge bar. That is harder to build than a lookup table, and correspondingly harder for anyone else to copy.</p>
+  </div>
+</section>
+
+<section id="walkthroughs" class="rule-top">
+  <p class="eyebrow">Behaviour</p>
+  <h2>Three requests, traced</h2>
+  <div class="prose">
+    <p>The same platform, three very different contracts. Watch where the human stays in the loop, and where the agent is allowed to commit.</p>
+  </div>
+
+  <h3>Call centre: "Will the 900mm drawers fit my dual-cab Hilux, and have you got them at Campbelltown?"</h3>
+  <p class="prose">The hardest of the three. The caller expects an answer before they finish the question, and the two halves of that sentence need completely different systems.</p>
+  <ol class="trace">
+    <li><span class="lane">Channel</span><div class="body"><b>Caller speaks</b><span>Streaming STT emits partial hypotheses while the caller is still talking. "900mm drawers" and "dual-cab Hilux" arrive before the sentence ends.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>Speculative prefetch fires on the partial</b><span>The router reads the partial and starts <code>product.get</code> and the vehicle lookup before the caller stops speaking. This is the single biggest latency win in the design.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>The vehicle question is a constraint problem, not a lookup</b><span>There is no fitment matrix. A drawer labelled 900mm is universal-fit, and whether it suits this ute depends on tub length, which differs between single-cab, extra-cab and dual-cab, and on whether a hard lid or canopy is fitted. The agent asks the one detail that changes the answer rather than guessing at it.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>Stock is asked of the store, not the warehouse</b><span><code>inventory.bySku</code> gives the national position. <code>stock.companyStore</code> gives Campbelltown. Where that data does not exist yet, the agent says so and offers a transfer or Click &amp; Collect instead of implying a shelf it cannot see.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>Guardrail checks the answer before it is spoken</b><span>Every price and stock figure must carry a citation from a tool response. An unsourced number is dropped, not softened.</span></div></li>
+    <li><span class="lane human">Human</span><div class="body human"><b>Escalation stays cheap</b><span>Below threshold, on complaint language, or when the caller asks to speak to the store, the call transfers with a generated summary so nobody repeats themselves.</span></div></li>
+  </ol>
+
+  <h3>In-store: "Customer wants a refund on a winch bought fourteen months ago, and the receipt is gone."</h3>
+  <p class="prose">A policy question disguised as a product question, and the clearest argument in this document for keeping a human on the commit.</p>
+  <ol class="trace">
+    <li><span class="lane">Channel</span><div class="body"><b>Staff member asks inside the POS</b><span>Typed, not spoken. The customer is standing at the counter, so the interaction has a social dimension the agent should not attempt.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>The policy question is a rules question</b><span>Change of mind gives store credit only, within 30 days, with proof of purchase and authorisation obtained before the item comes back. A major fault is a different regime with different remedies. Fourteen months with no receipt decides which regimes remain open, and the rules engine answers that rather than a paragraph of policy text.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>Context assembled from four sources</b><span><code>txn.history</code> for the original sale, <code>customer.get</code> for identity and wholesale tier, <code>product.get</code> for whether the item was clearance, factory seconds or Scratch &amp; Dent, and the date-versioned policy rules.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>Answer returned as a position, with the regime named</b><span>"Not eligible for change of mind" and "may have a claim under the voluntary 12-month warranty, subject to assessment" are different answers with different next steps. The agent states which one applies and labels the rest a recommendation.</span></div></li>
+    <li><span class="lane human">Human</span><div class="body human"><b>Staff commit, warranty assesses</b><span><code>refund.propose</code> stages the action. No cash refund is processed in store, and a faulty item is assessed by the warranty department before any claim is finalised. The audit record names the agent, the staff member and the assessor.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>Degraded path, if there is no WAN</b><span>A small on-premise model answers policy and specification questions from a replicated corpus. Anything needing live data returns "unavailable" rather than a guess. The transaction path never depends on the AI at all.</span></div></li>
+  </ol>
+
+  <h3>Storefront: "Will this roof top tent fit my Prado with factory roof rails?"</h3>
+  <p class="prose">The only channel where the customer is alone, unsupervised and about to spend money.</p>
+  <ol class="trace">
+    <li><span class="lane">Channel</span><div class="body"><b>Shopper asks on the product page</b><span>The SKU being viewed is passed in automatically. The shopper should never have to name the product they are looking at.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>Vehicle profile pulled from the session</b><span>If the shopper has registered a vehicle it is reused. If not, the agent asks for the minimum it needs and offers to save it for next time.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>The answer is a load calculation, not a compatibility flag</b><span>The tent's weight against this vehicle's roof load rating, whether factory rails are present, and whether a cross bar kit is required. The reply names the tent, the cross bars it needs, and the rating it has to stay under.</span></div></li>
+    <li><span class="lane plat">Platform</span><div class="body plat"><b>Alternatives are offered, not withheld</b><span>If the rating is insufficient the agent names what does fit, rather than leaving the shopper at a dead end with a "no".</span></div></li>
+    <li><span class="lane human">Human</span><div class="body human"><b>Low-confidence answers route to a person</b><span>With the vehicle, the SKU and the reason for uncertainty already attached to the enquiry, so the customer waits for an expert instead of receiving a plausible invention.</span></div></li>
+  </ol>
+</section>
+
+<section id="targets" class="rule-top">
+  <p class="eyebrow">Non-functional targets</p>
+  <h2>What good looks like, per channel</h2>
+  <div class="prose">
+    <p>These are the numbers the platform is designed against. They are written as SLOs with an owner, and they are asserted in CI rather than discovered in production.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Channel</th><th>Latency SLO</th><th>Availability</th><th>Degraded path</th><th>Quality gate</th><th>Cost ceiling</th></tr></thead>
+      <tbody>
+        <tr><td>Voice</td><td class="num">p50 &lt; 850 ms · p95 &lt; 1.2 s first audio</td><td class="num">99.9%</td><td>Warm transfer to a human queue</td><td class="num">Containment ≥ 40% · zero invented stock or price</td><td class="num">&lt; A$0.35 / contained call</td></tr>
+        <tr><td>In-store POS</td><td class="num">assist &lt; 1.5 s · POS UI &lt; 300 ms</td><td class="num">99.95% core POS</td><td>On-premise model, then a static policy lookup</td><td class="num">Fitment accuracy ≥ 99% on the eval set</td><td class="num">&lt; A$0.02 / interaction</td></tr>
+        <tr><td>Storefront</td><td class="num">p95 &lt; 1.2 s first token</td><td class="num">99.9%</td><td>Native Shopify search and help centre</td><td class="num">Groundedness ≥ 98% · every claim cited</td><td class="num">&lt; A$0.03 / session</td></tr>
+        <tr><td>Staff copilot</td><td class="num">p95 &lt; 2 s</td><td class="num">99.5%</td><td>Static knowledge base</td><td class="num">Citation rate 100%</td><td class="num">internal allocation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <p><span class="k">Availability is not one number</span>Core POS must clear 99.95% and the AI on top of it does not need to. If the assist layer is down, staff sell with the deterministic POS they have always had. Making the AI a dependency of the transaction path would be the single most damaging design mistake available here.</p>
+  </div>
+
+  <h3>The voice latency budget</h3>
+  <p class="prose">A caller tolerates roughly a second of silence before they assume the line has dropped. That second has to cover telephony, speech recognition, turn detection, retrieval, model reasoning, speech synthesis and playback. There is no way to spend it sequentially, so the design buys time by starting work before the caller stops speaking.</p>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 280" role="img" aria-label="Two stacked bars comparing time to first audio. With speculative prefetch the turn completes in 850 milliseconds; without it the same turn takes 1070 milliseconds and breaches the 1000 millisecond budget line.">
+        <!-- budget line -->
+        <line x1="793.3" y1="52" x2="793.3" y2="230" stroke="var(--signal)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text class="xs sig" x="793.3" y="44" text-anchor="middle" letter-spacing="1.1">1,000 ms BUDGET</text>
+
+        <!-- bar A : with prefetch -->
+        <text class="t" x="60" y="78" font-size="12">With speculative prefetch</text>
+        <g fill="var(--paper-3)" stroke="var(--rule-soft)">
+          <rect x="60" y="88" width="66" height="44"/>
+          <rect x="126" y="88" width="132" height="44"/>
+          <rect x="258" y="88" width="234.7" height="44"/>
+          <rect x="492.7" y="88" width="132" height="44"/>
+          <rect x="624.7" y="88" width="58.6" height="44"/>
+        </g>
+        <g class="sm" fill="var(--ink-2)">
+          <text x="134" y="115">Endpointing</text>
+          <text x="266" y="115">LLM first token</text>
+          <text x="500" y="115">TTS</text>
+        </g>
+        <text class="t" x="694" y="115" font-size="12" fill="var(--ink)">850 ms</text>
+
+        <!-- bar B : without -->
+        <text class="t" x="60" y="158" font-size="12">Without prefetch</text>
+        <g fill="var(--paper-3)" stroke="var(--rule-soft)">
+          <rect x="60" y="168" width="66" height="44"/>
+          <rect x="126" y="168" width="132" height="44"/>
+          <rect x="419.3" y="168" width="234.7" height="44"/>
+          <rect x="654" y="168" width="132" height="44"/>
+          <rect x="786" y="168" width="58.6" height="44"/>
+        </g>
+        <rect x="258" y="168" width="161.3" height="44" fill="var(--signal-tint)" stroke="var(--signal)"/>
+        <g class="sm" fill="var(--ink-2)">
+          <text x="134" y="195">Endpointing</text>
+          <text x="427" y="195">LLM first token</text>
+          <text x="662" y="195">TTS</text>
+        </g>
+        <text class="sm sig" x="266" y="195">Tool calls</text>
+        <text class="t" x="856" y="195" font-size="12" fill="var(--signal)">1,070 ms</text>
+
+        <!-- axis -->
+        <line x1="60" y1="244" x2="940" y2="244" stroke="var(--rule)"/>
+        <g stroke="var(--rule)">
+          <line x1="60" y1="244" x2="60" y2="249"/>
+          <line x1="206.7" y1="244" x2="206.7" y2="249"/>
+          <line x1="353.3" y1="244" x2="353.3" y2="249"/>
+          <line x1="500" y1="244" x2="500" y2="249"/>
+          <line x1="646.7" y1="244" x2="646.7" y2="249"/>
+          <line x1="793.3" y1="244" x2="793.3" y2="249"/>
+          <line x1="940" y1="244" x2="940" y2="249"/>
+        </g>
+        <g class="xs mut" text-anchor="middle">
+          <text x="60" y="264">0</text><text x="206.7" y="264">200</text><text x="353.3" y="264">400</text>
+          <text x="500" y="264">600</text><text x="646.7" y="264">800</text>
+          <text x="793.3" y="264" class="sig">1,000</text><text x="940" y="264">1,200</text>
+        </g>
+        <text class="xs mut" x="60" y="278">milliseconds to first audio</text>
+      </svg>
+    </div>
+    <figcaption><b>Where the second goes.</b> The two bars are the same turn. The only difference is the orange block: tool calls issued against the partial transcript while the caller was still speaking. Everything else, telephony and jitter buffer, endpointing, model time to first token, synthesis and playback buffering, is unchanged. Speculative prefetch also needs a miss path, roughly 220 ms added, so the router only speculates when the partial already names a vehicle and a part category.</figcaption>
+  </figure>
+
+  <ul class="rules">
+    <li><span class="n">01</span><span><b>Speculate during speech.</b>Start tool calls on the partial transcript. Abandon them cheaply if the finished sentence contradicts the hypothesis.</span></li>
+    <li><span class="n">02</span><span><b>Two model tiers on the critical path.</b>The fast model answers routine turns outright. Only hard turns escalate to the frontier model, and only after a filler has been played.</span></li>
+    <li><span class="n">03</span><span><b>Endpointing beats silence timers.</b>Semantic turn detection removes roughly 400 ms of dead air compared with waiting for a fixed pause.</span></li>
+    <li><span class="n">04</span><span><b>Keep connections warm.</b>Pre-established model and speech sessions. A cold TLS handshake at turn one is a second of silence by itself.</span></li>
+    <li><span class="n">05</span><span><b>Barge-in is mandatory.</b>The caller must be able to interrupt. A voice agent that talks over people is worse than an IVR menu.</span></li>
+  </ul>
+</section>
+
+<section id="buildbuy" class="rule-top">
+  <p class="eyebrow">Sourcing</p>
+  <h2>Build or buy</h2>
+  <div class="prose">
+    <p>The brief asks for expertise on platforms and an ability to build where a platform falls short. The line runs in a consistent place: <strong>buy the commodity intelligence, build the connective tissue and the domain knowledge</strong>. Models, speech and vector search are improving faster than any internal team can, so owning them is a liability. The tool mesh, the vehicle configuration model and the eval suite are specific to this business, so renting them is a liability.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Capability</th><th>Call</th><th>Reasoning</th><th>Exit cost if wrong</th></tr></thead>
+      <tbody>
+        <tr><td>Frontier &amp; fast models</td><td class="num">buy</td><td>Commodity, improving monthly, no differentiation in owning it</td><td class="num">low, behind the gateway</td></tr>
+        <tr><td>Model gateway &amp; routing</td><td class="num">build</td><td>Thin layer. It is the only thing preventing provider lock-in and uncontrolled spend</td><td class="num">low</td></tr>
+        <tr><td>Speech STT / TTS</td><td class="num">buy</td><td>Fastest-moving segment in the stack. Abstract it, do not own it</td><td class="num">low, one adapter</td></tr>
+        <tr><td>Voice orchestration</td><td class="num">buy, then fork</td><td>Realtime plumbing is solved; start on a platform, take ownership of the tool layer immediately</td><td class="num">medium</td></tr>
+        <tr><td>Agent framework</td><td class="num">buy</td><td>Tool-calling loops are commoditising. The budgets and policy around them are not</td><td class="num">medium</td></tr>
+        <tr><td>MCP server fleet</td><td class="num">build</td><td>The majority of the work and the source of all reusability</td><td class="num">high if rented poorly</td></tr>
+        <tr><td>Retrieval &amp; rerank</td><td class="num">buy components</td><td>Managed vector search is fine. The corpus pipeline is yours</td><td class="num">low</td></tr>
+        <tr><td>Vehicle configuration model</td><td class="num">build</td><td>Products are universal-fit, so there is no fitment matrix to buy. Modelling the customer's vehicle and build is the differentiator</td><td class="num">n/a, no alternative</td></tr>
+        <tr><td>Eval harness</td><td class="num">build</td><td>A vendor does not know what a wrong fitment answer looks like here</td><td class="num">high</td></tr>
+        <tr><td>Tracing &amp; cost</td><td class="num">buy</td><td>Solved problem. Buy the traces, build the channel dashboards</td><td class="num">low</td></tr>
+        <tr><td>Shopify merchant AI</td><td class="num">adopt</td><td>Use what ships natively for merchandising and merchant ops. Do not rebuild it</td><td class="num">n/a</td></tr>
+        <tr><td>Bespoke POS AI</td><td class="num">build</td><td>The POS is already differentiated and offline constraints rule out most platforms</td><td class="num">n/a</td></tr>
+        <tr><td>Human handoff &amp; desktop</td><td class="num">adopt</td><td>Extend the existing contact centre rather than running a parallel one</td><td class="num">medium</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <p><span class="k">The trap in "buy"</span>A bought platform is only safe if the thing you actually depend on stays yours. Buy the speech engine, but keep the tool mesh, the prompts and the eval suite inside the platform. Otherwise the day the vendor changes pricing or gets acquired, the migration is not a re-integration, it is a rebuild.</p>
+  </div>
+</section>
+
+<section id="roadmap" class="rule-top">
+  <p class="eyebrow">Delivery</p>
+  <h2>Six phases, twelve months</h2>
+  <div class="prose">
+    <p>Sequence matters more than speed here. Each phase leaves behind a platform capability that the next phase consumes, and the riskiest channel is deliberately not first. Voice is the highest-value and highest-risk build, so it lands after the platform spine has been proven on an audience that cannot generate a viral complaint.</p>
+  </div>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="Gantt chart of six overlapping delivery phases across 52 weeks, each ending in an exit gate.">
+        <!-- gridlines -->
+        <g stroke="var(--rule-soft)">
+          <line x1="150" y1="30" x2="150" y2="262"/>
+          <line x1="274.6" y1="30" x2="274.6" y2="262"/>
+          <line x1="399.2" y1="30" x2="399.2" y2="262"/>
+          <line x1="523.9" y1="30" x2="523.9" y2="262"/>
+          <line x1="648.5" y1="30" x2="648.5" y2="262"/>
+          <line x1="773.1" y1="30" x2="773.1" y2="262"/>
+          <line x1="897.7" y1="30" x2="897.7" y2="262"/>
+        </g>
+
+        <!-- bars -->
+        <g fill="var(--paper-3)" stroke="var(--rule)">
+          <rect x="165.6" y="44" width="46.7" height="26" rx="3"/>
+          <rect x="196.7" y="82" width="140.2" height="26" rx="3"/>
+          <rect x="305.8" y="120" width="186.9" height="26" rx="3"/>
+          <rect x="430.4" y="158" width="186.9" height="26" rx="3"/>
+          <rect x="523.9" y="196" width="186.9" height="26" rx="3"/>
+          <rect x="679.6" y="234" width="280.4" height="26" rx="3"/>
+        </g>
+        <rect x="196.7" y="82" width="140.2" height="26" rx="3" fill="var(--signal-tint)" stroke="var(--signal)"/>
+
+        <g class="t" text-anchor="end" font-size="11">
+          <text x="140" y="61">P0  Foundation</text>
+          <text x="140" y="99">P1  Platform spine</text>
+          <text x="140" y="137">P2  Voice</text>
+          <text x="140" y="175">P3  In-store POS</text>
+          <text x="140" y="213">P4  Ecommerce</text>
+          <text x="140" y="251">P5  Autonomy</text>
+        </g>
+
+        <!-- gates -->
+        <g fill="var(--signal)">
+          <polygon points="221,57 226,62 221,67 216,62"/>
+          <polygon points="345.9,95 350.9,100 345.9,105 340.9,100"/>
+          <polygon points="501.7,133 506.7,138 501.7,143 496.7,138"/>
+          <polygon points="626.3,171 631.3,176 626.3,181 621.3,176"/>
+          <polygon points="719.8,209 724.8,214 719.8,219 714.8,214"/>
+          <polygon points="969,247 974,252 969,257 964,252"/>
+        </g>
+
+        <!-- axis -->
+        <line x1="150" y1="274" x2="960" y2="274" stroke="var(--rule)"/>
+        <g class="xs mut" text-anchor="middle">
+          <text x="150" y="289">wk 0</text><text x="274.6" y="289">8</text><text x="399.2" y="289">16</text>
+          <text x="523.9" y="289">24</text><text x="648.5" y="289">32</text>
+          <text x="773.1" y="289">40</text><text x="897.7" y="289">48</text>
+        </g>
+        <text class="xs mut" x="24" y="289">◆ exit gate</text>
+      </svg>
+    </div>
+    <figcaption><b>Overlap is deliberate.</b> Voice engineering starts at week 10, two weeks before the spine is declared done, because telephony procurement and carrier integration have long lead times. Phase 5 never really ends; it is the steady state the platform runs in once the three channels are live.</figcaption>
+  </figure>
+
+  <div class="phase">
+    <div class="phase-h"><span class="phase-id">P0</span><h3>Foundation</h3><span class="phase-wk">weeks 1–4</span></div>
+    <div class="phase-grid">
+      <div>
+        <h4>Scope</h4>
+        <ul class="tight">
+          <li>Inventory every AI use case, scored by value and risk tier</li>
+          <li>Map systems of record, data owners and integration constraints</li>
+          <li>Assess catalogue data quality and the vehicle attributes the agent will need, which determines what it can promise</li>
+          <li>Ratify the architecture decisions and the sourcing calls</li>
+          <li>Privilege, privacy and security baseline; residency position</li>
+          <li>Baseline today's numbers: call containment, handle time, return rate</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Exit gate</h4>
+        <p>Architecture signed, decision records published, risk register owned, baseline instrumented. No model is called before this gate.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-h"><span class="phase-id">P1</span><h3>Platform spine</h3><span class="phase-wk">weeks 3–12</span></div>
+    <div class="phase-grid">
+      <div>
+        <h4>Scope</h4>
+        <ul class="tight">
+          <li>Model gateway with routing, fallback and cost accounting</li>
+          <li>MCP servers for the first five systems: Shopify, POS, inventory, CRM, policy</li>
+          <li>Retrieval service, corpus pipeline with intent classification, and the vehicle configuration model</li>
+          <li>Store and stockist directories, which unblock the most common question the agent will face</li>
+          <li>Session, memory, guardrails and the eval harness</li>
+          <li>Tracing, per-conversation cost, prompt registry, CI eval gates</li>
+          <li>Proven on the lowest-risk audience: an internal staff copilot</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Exit gate</h4>
+        <p>One internal agent in daily staff use. Eval suite green in CI on every pull request. Cost per conversation measured and attributed. Tool mesh covers the five core systems.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-h"><span class="phase-id">P2</span><h3>Voice agent, containment scope</h3><span class="phase-wk">weeks 10–22</span></div>
+    <div class="phase-grid">
+      <div>
+        <h4>Scope</h4>
+        <ul class="tight">
+          <li>Telephony integration, streaming speech, barge-in, warm transfer</li>
+          <li>Latency budget met end to end, asserted in CI against a recorded corpus</li>
+          <li>AI disclosure, consent capture and Do Not Call Register washing</li>
+          <li>Containment limited to order status, freight tracking, store location, and specification questions the published guides can ground</li>
+          <li>Store stock enters containment only once that data exists, which may land later than the voice agent itself. Scoping it in early would promise a capability the business does not yet have</li>
+          <li>Shadow mode first: the agent listens alongside the live queue before it speaks</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Exit gate</h4>
+        <p>First-audio p50 under 850 ms in production. Containment at or above 40%. Zero compliance incidents. Human-handled CSAT not degraded. Rollback exercised and proven.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-h"><span class="phase-id">P3</span><h3>In-store POS</h3><span class="phase-wk">weeks 18–30</span></div>
+    <div class="phase-grid">
+      <div>
+        <h4>Scope</h4>
+        <ul class="tight">
+          <li>On-premise inference path and the offline degradation ladder</li>
+          <li>Staff copilot for policy, warranty, fitment and compatible upsell</li>
+          <li>Customer-facing fitment confirmation at the counter</li>
+          <li>All write actions staged for staff approval, with dual attribution in the audit record</li>
+          <li>Pilot in a small store cohort before rollout</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Exit gate</h4>
+        <p>No POS downtime attributable to the AI across the pilot. Vehicle-fitment answers correct on the eval set, including the ones the agent correctly declines to answer. Measured staff adoption, not just licence deployment.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-h"><span class="phase-id">P4</span><h3>Ecommerce and Shopify</h3><span class="phase-wk">weeks 24–36</span></div>
+    <div class="phase-grid">
+      <div>
+        <h4>Scope</h4>
+        <ul class="tight">
+          <li>Storefront assistant on the product page, scoped to fitment and specification</li>
+          <li>Post-purchase deflection: where is my order, warranty, returns intake</li>
+          <li>Catalogue enrichment and attribute completion, human-reviewed</li>
+          <li>Consent-based cart recovery, never an autonomous discount</li>
+          <li>Native Shopify AI adopted for merchant-side operations</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Exit gate</h4>
+        <p>Deflection rate measured against the phase 0 baseline. Groundedness gate at 98%. Return rate and average order value effects reported, including the negative results.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-h"><span class="phase-id">P5</span><h3>Autonomy and optimisation</h3><span class="phase-wk">weeks 34–52+</span></div>
+    <div class="phase-grid">
+      <div>
+        <h4>Scope</h4>
+        <ul class="tight">
+          <li>Consent-based proactive outbound, within telemarketing rules</li>
+          <li>Personalisation across channels off one customer profile</li>
+          <li>Risk-tier promotion of specific actions from propose to commit</li>
+          <li>Cost and latency optimisation, model migration without channel changes</li>
+          <li>Governance forum operating on a standing cadence</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Exit gate</h4>
+        <p>Promotion process proven end to end, with a documented case of an action being promoted and another being demoted. Unit economics positive per channel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="governance" class="rule-top">
+  <p class="eyebrow">Plane 1</p>
+  <h2>Governance, risk and compliance</h2>
+  <div class="prose">
+    <p>Australia has unusually specific obligations for exactly the things this platform does. An AI voice agent that calls customers is telemarketing. A hallucinated price is a misrepresentation under consumer law. An AI that decides a refund is an automated decision with privacy consequences. These are design inputs, not a review at the end.</p>
+  </div>
+
+  <div class="comps">
+    <div class="comp"><div class="head"><span class="cname">Privacy Act &amp; the APPs</span></div><p>Call recordings and transcripts are personal information. Cross-border disclosure rules apply the moment a prompt reaches an offshore endpoint, so residency routing is a control, not a preference. Notifiable breaches run through the OAIC.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Automated decision-making</span></div><p>Recent reforms tighten obligations where a computer program makes a decision that significantly affects an individual. Refund approval and warranty denial sit squarely in scope. The design keeps humans on consequential decisions and logs the model's recommendation alongside the human's.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Telemarketing &amp; AI disclosure</span></div><p>Outbound AI calls are telemarketing. Consent must be captured, the Do Not Call Register must be washed, and the agent must disclose that it is an AI. Spoofing a human agent is prohibited and also a brand decision no one should want.</p></div>
+    <div class="comp"><div class="head"><span class="cname">PCI DSS v4.0</span></div><p>The moment a card number enters a voice or chat context, that whole system inherits cardholder-data scope. The design never lets it happen: payment links, DTMF masking at the carrier, and transcript redaction as a hard output filter.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Consumer law grounding</span></div><p>Misleading conduct applies to machine statements. An invented stock level or fitment claim is a misrepresentation whether or not a human typed it. Groundedness is therefore a legal control with an eval threshold, not a quality nicety.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Residency &amp; vendor assessment</span></div><p>Personal data and transcripts stay in an Australian region wherever the provider offers one. Where it does not, the disclosure is documented and assessed rather than assumed away.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Retention and erasure</span></div><p>A retention schedule for transcripts, and a working erasure path that reaches the vector index. Embeddings of personal data are still personal data, and this is the step most teams discover they cannot perform.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Kill switch &amp; audit lineage</span></div><p>Per-agent and per-channel stop control with a tested runbook. Every call traceable to the model version, prompt version, tool versions and retrieved documents that produced it.</p></div>
+  </div>
+
+  <div class="callout">
+    <p><span class="k">Risk tiering drives everything else</span>Every use case is classified before it is built: <strong>L1</strong> advises a human, <strong>L2</strong> acts but requires approval, <strong>L3</strong> acts autonomously within limits. The tier sets the eval threshold, the logging depth, the human-in-the-loop requirement and the blast radius. Nothing is promoted to L3 by enthusiasm; it is promoted by evidence from a shadow run.</p>
+  </div>
+</section>
+
+<section id="decisions" class="rule-top">
+  <p class="eyebrow">Decision records</p>
+  <h2>The calls that shape everything else</h2>
+  <div class="prose">
+    <p>Each of these is expensive to reverse. They are recorded with the trade-off that was accepted, because the alternatives are reasonable and will be raised again.</p>
+  </div>
+
+  <div class="adr">
+    <div class="adr-h"><span class="adr-id">ADR-001</span><h3>MCP servers are the only path from agent to system of record</h3></div>
+    <dl>
+      <dt>Context</dt><dd>Nineteen systems, three channels, and a team of fifteen. Direct API calls from each agent would produce three parallel integrations per system and no shared contract.</dd>
+      <dt>Decision</dt><dd>One typed MCP server per system, owned by the platform team, versioned and eval-covered like any other service.</dd>
+      <dt>Trade-off</dt><dd>An extra hop and a schema to maintain. In exchange, no agent holds credentials, no agent knows an endpoint, and a system can be replaced without touching a prompt.</dd>
+    </dl>
+  </div>
+
+  <div class="adr">
+    <div class="adr-h"><span class="adr-id">ADR-002</span><h3>No channel calls a model provider directly</h3></div>
+    <dl>
+      <dt>Context</dt><dd>Model prices, capabilities and regional availability change on a monthly cadence. Three channels calling three SDKs makes every change a three-way migration.</dd>
+      <dt>Decision</dt><dd>All inference through one gateway that owns routing, fallback, caching, budget caps and per-cost-centre accounting.</dd>
+      <dt>Trade-off</dt><dd>The gateway can lag a provider's newest feature by days, and becomes a shared dependency that must never be down. Accepted, because provider lock-in across three channels is the larger risk.</dd>
+    </dl>
+  </div>
+
+  <div class="adr">
+    <div class="adr-h"><span class="adr-id">ADR-003</span><h3>The POS keeps working with no network, and the AI is not on its critical path</h3></div>
+    <dl>
+      <dt>Context</dt><dd>Stores lose connectivity. A cloud-only assistant turns a WAN outage into a queue at the counter.</dd>
+      <dt>Decision</dt><dd>A small on-premise model answers policy and fitment from a replicated corpus. Anything needing live data returns unavailable rather than a guess. The transaction path never depends on inference at all.</dd>
+      <dt>Trade-off</dt><dd>A second deployment target, a replication pipeline, and a capability that differs from the cloud path. Accepted, because a checkout that stops is unrecoverable and an assistant that degrades is not.</dd>
+    </dl>
+  </div>
+
+  <div class="adr">
+    <div class="adr-h"><span class="adr-id">ADR-004</span><h3>Buy voice orchestration, build the tool layer</h3></div>
+    <dl>
+      <dt>Context</dt><dd>Real-time audio transport, jitter handling and interruption logic are genuinely hard and genuinely solved by vendors. Tool integration into this business is neither solved nor for sale.</dd>
+      <dt>Decision</dt><dd>Start on a voice platform for the realtime leg. Keep the tool mesh, prompts and evals in the platform from day one, behind an interface thin enough to swap the orchestration layer.</dd>
+      <dt>Trade-off</dt><dd>A vendor sits on the critical path for the highest-value channel. Mitigated by keeping the replaceable part small and the owned part large.</dd>
+    </dl>
+  </div>
+
+  <div class="adr">
+    <div class="adr-h"><span class="adr-id">ADR-005</span><h3>No prompt reaches production without a passing eval delta</h3></div>
+    <dl>
+      <dt>Context</dt><dd>Prompts are edited in dashboards, by many people, with no review and no history. A single word change can alter refund behaviour across three channels.</dd>
+      <dt>Decision</dt><dd>Prompts and agent configurations live in git beside the code they drive. CI scores every change against golden datasets and refuses regressions.</dd>
+      <dt>Trade-off</dt><dd>Slower iteration and real work to build the datasets. Accepted, because unreviewed prompt changes are the most common way an AI system degrades without anyone noticing.</dd>
+    </dl>
+  </div>
+
+  <div class="adr">
+    <div class="adr-h"><span class="adr-id">ADR-006</span><h3>Personal data is routed to Australian regions by default</h3></div>
+    <dl>
+      <dt>Context</dt><dd>Transcripts, customer records and vehicle details flow through every inference call. Offshore endpoints are cheaper and sometimes faster.</dd>
+      <dt>Decision</dt><dd>The gateway classifies the payload and routes anything carrying personal information to an Australian region, accepting a cost and capability penalty where one exists.</dd>
+      <dt>Trade-off</dt><dd>Some models arrive later in Australian regions, and a few not at all. Accepted, because cross-border disclosure of call recordings is a compliance exposure that does not reduce over time.</dd>
+    </dl>
+  </div>
+
+  <div class="adr">
+    <div class="adr-h"><span class="adr-id">ADR-007</span><h3>Humans commit every money-moving action</h3></div>
+    <dl>
+      <dt>Context</dt><dd>Refunds, credits, discounts and warranty outcomes are exactly where an AI error is most expensive and most visible.</dd>
+      <dt>Decision</dt><dd>Agents gather, reason and propose. A human commits. Both are named in the audit record. Promotion to autonomous commit requires a shadow run and an explicit risk-tier review.</dd>
+      <dt>Trade-off</dt><dd>The labour saving is smaller than the demo implies. Accepted, because a single mis-issued refund to the wrong customer costs more than the efficiency gained.</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="risks" class="rule-top">
+  <p class="eyebrow">Risk register</p>
+  <h2>What is most likely to go wrong</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Risk</th><th>Consequence</th><th>Control</th><th>Plane</th></tr></thead>
+      <tbody>
+        <tr><td>Vehicle misfit or false stock promise</td><td class="num">Wasted trip, return, fitting cost, poor review, ACL exposure</td><td>Vehicle configuration model, confidence threshold, "call to confirm" for stockists, and no stock claim without a citation</td><td class="num">P4</td></tr>
+        <tr><td>Voice latency blowout</td><td class="num">Caller hangs up, containment collapses</td><td>Speculative prefetch, two model tiers, latency asserted in CI against recorded turns</td><td class="num">P5</td></tr>
+        <tr><td>Store connectivity loss</td><td class="num">Trading stops at the counter</td><td>On-premise inference, deterministic fallback, AI off the transaction path</td><td class="num">P7</td></tr>
+        <tr><td>Prompt injection via customer input or catalogue content</td><td class="num">Data exfiltration or an unintended action</td><td>Per-agent tool allowlists, no secrets in context, output validation, injection classifier</td><td class="num">P6</td></tr>
+        <tr><td>PII to an offshore endpoint</td><td class="num">Cross-border disclosure breach</td><td>Payload classification and residency routing at the gateway, redaction before egress</td><td class="num">P1</td></tr>
+        <tr><td>Cost runaway</td><td class="num">Gross margin erosion on every automated interaction</td><td>Per-conversation budget caps, gateway accounting, alerting on cost per contained call</td><td class="num">P5</td></tr>
+        <tr><td>Over-automation</td><td class="num">CSAT and brand damage, hard to walk back</td><td>Risk tiering, shadow mode, canary by queue, human-in-the-loop by default</td><td class="num">P1</td></tr>
+        <tr><td>Vendor lock-in on the voice leg</td><td class="num">Re-platforming cost at the worst moment</td><td>Thin orchestration interface, tool mesh owned internally</td><td class="num">P3</td></tr>
+        <tr><td>Shadow AI use by staff</td><td class="num">Ungoverned data leaving the business</td><td>Sanctioned tooling, gateway as the only egress, policy with teeth</td><td class="num">P1</td></tr>
+        <tr><td>Transcript retention and erasure gaps</td><td class="num">Compliance finding, DSAR failure</td><td>Retention schedule, erasure path that reaches the vector index and is tested</td><td class="num">P4</td></tr>
+        <tr><td>Eval drift as the business changes</td><td class="num">Silent quality decay after a catalogue or policy change</td><td>Datasets refreshed on a cadence, regression alerts, a named owner per agent</td><td class="num">P2</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="operating" class="rule-top">
+  <p class="eyebrow">Operating model</p>
+  <h2>How fifteen people run this</h2>
+  <div class="prose">
+    <p>The platform is run as an internal product with a named owner, an SLA and a roadmap, not as a shared library that everyone edits. A platform with no owner becomes a dumping ground within two quarters.</p>
+  </div>
+
+  <div class="comps">
+    <div class="comp"><div class="head"><span class="cname">Platform pod · 3–4</span></div><p>Gateway, MCP mesh, retrieval, guardrails, eval harness, observability. Owns the SLAs every channel depends on.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Voice pod · 2–3</span></div><p>Telephony, realtime audio, latency budget, containment quality, compliance of the voice channel.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Commerce &amp; store pod · 2–3</span></div><p>Storefront assistant, POS copilot, offline path, counter workflows.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Data &amp; knowledge · 2</span></div><p>Vehicle configuration model, corpus ownership, data quality, policy rules. Reports to neither channel pod, deliberately.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Platform reliability &amp; security · 2</span></div><p>Egress control, secrets, residency, incident response, the kill-switch runbook.</p></div>
+    <div class="comp"><div class="head"><span class="cname">Product &amp; analysis · 1–2</span></div><p>Use-case intake, risk tiering, before-and-after measurement, the governance forum.</p></div>
+  </div>
+
+  <h3>The engineering method is itself a deliverable</h3>
+  <div class="prose">
+    <p>The brief asks for someone fluent in AI-first tooling, and that has a concrete architectural consequence: the same discipline applies to the platform's own development. Specifications committed alongside code. Agentic review on every pull request. An internal MCP server for the team's own tooling, so debugging a production conversation is a question rather than a query hunt. Repository-level convention files so every agent working in a codebase inherits the same constraints.</p>
+    <p>This is not a productivity footnote. A team that uses evaluation gates, versioned prompts and traced failures on its own work finds the same discipline obvious in the platform. A team that does not will ship prompts nobody can audit.</p>
+  </div>
+
+  <div class="callout">
+    <p><span class="k">The first ninety days, in one line</span>Build the spine, prove it on the staff copilot, and have the vehicle configuration model under way before the voice agent takes its first real call.</p>
+  </div>
+</section>
+
+<section class="rule-top">
+  <div class="prose">
+    <p style="font-family:var(--mono); font-size:11.5px; color:var(--ink-3); line-height:1.7">Reference architecture · version 1.0 · component names are generic and map to any equivalent platform. Figures are hand-drawn to scale; the latency budget reflects overlapped streaming stages, not sequential summation.</p>
+  </div>
+</section>
+
+</main>
+</div>

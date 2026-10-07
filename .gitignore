@@ -1,0 +1,19 @@
+.DS_Store
+
+# The 49MB master recording. The 1080p cut is the published one - same content,
+# 8.3MB, and it keeps every clone of this repo small.
+4wd_audio_agent_demo.mov
+
+# Application material, not part of the project. A resume in a public repo has
+# a personal phone number and email in it, and those get scraped.
+Kuldeep_Pal_AI_Full_Stack.pdf
+cover-letter.md
+
+# The POC source, held back until it is ready to publish. Ignoring the whole
+# folder also covers what 4wd-poc/.gitignore already handled - .env, the built
+# snapshots, node_modules - plus the unrelated Upstate architecture document
+# that happens to sit inside it.
+#
+# Note this stops future tracking; it does not erase the folder from the
+# commits that already carry it.
+4wd-poc/
