@@ -10,9 +10,15 @@ Built against the AI Platform Engineer brief — online, in-store and over the p
 
 ## Watch the demo
 
-**[`deliverables/4wd_audio_agent_demo_1080p.mp4`](deliverables/4wd_audio_agent_demo_1080p.mp4)** — a live voice call
-handling product search, store lookup and policy questions. The agent is speaking to a real
-Ultravox session whose tools call back into this repository's Python.
+[![The voice agent on a live call — product search, store lookup and policy answers](https://img.youtube.com/vi/MViqQgkk8-Q/maxresdefault.jpg)](https://youtu.be/MViqQgkk8-Q)
+
+**[Watch on YouTube →](https://youtu.be/MViqQgkk8-Q)** — a live voice call handling product
+search, store lookup and policy questions. The agent is speaking to a real Ultravox session
+whose tools call back into this repository's Python.
+
+The same recording is committed here as
+[`deliverables/4wd_audio_agent_demo_1080p.mp4`](deliverables/4wd_audio_agent_demo_1080p.mp4),
+if you would rather watch it without leaving the repository.
 
 ## Read the architecture
 
