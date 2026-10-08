@@ -12,7 +12,7 @@ Built against the AI Platform Engineer brief — online, in-store and over the p
 
 [![The voice agent on a live call — product search, store lookup and policy answers](https://img.youtube.com/vi/MViqQgkk8-Q/maxresdefault.jpg)](https://youtu.be/MViqQgkk8-Q)
 
-**[Watch on YouTube →](https://www.youtube.com/watch?v=smthb5sDGU4)** — a live Chat Bot and Voice Bot Assistance
+**[Watch on YouTube →](https://youtu.be/smthb5sDGU4?si=MPd2TAEI4f9EX83s)** — a live Chat Bot and Voice Bot Assistance
 **[Watch on YouTube →](https://youtu.be/MViqQgkk8-Q)** — a live voice call handling product
 search, store lookup and policy questions. The agent is speaking to a real Ultravox session
 whose tools call back into this repository's Python.
