@@ -10,7 +10,7 @@ Built against the AI Platform Engineer brief — online, in-store and over the p
 
 ## Watch the demo
 [![Watch on YouTube](https://img.youtube.com/vi/smthb5sDGU4/hqdefault.jpg)](https://youtu.be/smthb5sDGU4)
-**[Watch on YouTube →](https://www.youtube.com/watch?v=smthb5sDGU4)** 
+**[Watch on YouTube →](https://youtu.be/zVjqNHhn2zU)** 
 — a live Chat Bot and Voice Bot Assistance
 
 ---
